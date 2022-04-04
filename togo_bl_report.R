@@ -173,9 +173,17 @@ Reduce(function(...) merge(..., all=TRUE), list(df1, df2, df3))
 #Number of migrations
 #Number of morbidity events
 #Number of malaria cases
-#Number of hospitalisation all
-#Number of hospitalisation for malaria
+#Number of hospitalization all
+#Number of hospitalization for malaria
+indicators <- c('Number of SOC cohort', 'Number of MULTIPLY cohort', 'Number of missed visits',
+                'Number of deaths', 'Number of withdrawals', 'Number of migrations', 'Number of morbidity events',
+                'Number of malaria cases', 'Number of hospitalization all', 'Number of hospitalization for malaria')
+number <- c(sum(data_clean$screening_study_number_cohort == 1, na.rm = TRUE), sum(data_clean$screening_study_number_cohort == 2, na.rm = TRUE),
+            0, sum(data_clean$death_complete == 2, na.rm = TRUE), sum(data_clean$withdrawal_complete == 2, na.rm = TRUE), 
+            sum(data_clean$wdrawal_reason == 3, na.rm = TRUE), 0, 0, 0, 0)
+report <- data.frame(Indicators = indicators, N = number )
 
+write.csv(report, file = paste0('multiply_togo_cohort_indicators_', Sys.Date(), '.csv'), row.names = F)
 
 
 
