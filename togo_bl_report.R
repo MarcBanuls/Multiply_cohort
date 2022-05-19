@@ -4,7 +4,7 @@ library(dplyr)
 source("tokens.R")
 api.url <- maternal_api
 #togo_bl_token
-api.token <- testing_cohort_token
+api.token <- togo_bl_token
 
 # By the way, as you remember, we have discussed the set of indicators that need to be generated automatically for monitoring purpose. 
 # Please note that we are interested in the following indicators:
@@ -28,7 +28,8 @@ rcon <- redcapConnection(api.url, api.token)
 
 my.fields <- c('record_id', 'screening_district', 'screening_hf', 'screening_study_number_cohort','screening_child_number',
                'death_complete','withdrawal_complete', 'wdrawal_reason', 'community_complete','health_facility_complete',
-               'morb_malaria_result', 'unsch_malaria_blood_result', 'unsch_malaria_rdt_result', 'tests_complete', 'rdt_malaria_result')
+               'morb_malaria_result', 'unsch_malaria_blood_result', 'unsch_malaria_rdt_result', 'tests_complete', 'rdt_malaria_result',
+               'his_where', 'screening_dob_weeks')
 my.events <- c('penta2ipti1_3_mont_arm_1',
                'penta3ipti_2_4_mon_arm_1',
                'mrv1ipti_3_9_month_arm_1',
@@ -54,7 +55,6 @@ data_clean$study_number <- paste('COH',data$screening_district,data$screening_hf
                                 str_pad(data_clean$screening_child_number, 3,side = 'left', pad = "0"),
                                 sep = '-')
 
------
 
 
 # number of cohort childs:
@@ -98,7 +98,7 @@ malariacases <- length(which(data_clean$redcap_event_name == 'penta2ipti1_3_mont
 
 
 
-----------
+
 # NEEDED TO LINK RDT MALARIA EVENT WITH HHS before filtering by district.
 
 # Data separated in different arms. we separate into different dataframes by its arm name
@@ -185,12 +185,122 @@ report <- data.frame(Indicators = indicators, N = number )
 
 write.csv(report, file = paste0('multiply_togo_cohort_indicators_', Sys.Date(), '.csv'), row.names = F)
 
+#####description cohort togo #####
+# pick screening_dob_weeks, screening_hf and his_where cols 6,7,10
+#his_where: 1=HF 2=outreach, screening_dob_weeks: 10-14weeks or 15-20weeks
+#screening_hf:1	CMS Wahala 2	USP Amakpape 3	USP Hahomegbe 4	USP Tetetou
+desc_cohort <- data_clean[,c(6,7,10)]
+#filter from first desc_cohort, testing
+#screening_hf=1,screening_dob_weeks>=10 and <=14, his_where =1
+#wahala 10-14 fixed
+nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
+                             desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+                             !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                             !is.na(desc_cohort$his_where),])
+#wahala 10-14 outreach
+nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
+                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+
+#wahala 15-20 fixed
+nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
+                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+
+#wahala 15-20 outreach
+nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
+                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+
+#amakpape 10-14 fixed
+nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
+                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+#amakpape 10-14 outreach
+nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
+                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+
+#amakpape 15-20 fixed
+nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
+                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+
+#amakpape 15-20 outreach
+nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
+                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+
+
+#Hahomégbé 10-14 fixed
+nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
+                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+#Hahomégbé 10-14 outreach
+nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
+                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+
+#Hahomégbé 15-20 fixed
+nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
+                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+
+#Hahomégbé 15-20 outreach
+nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
+                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
 
 
 
 
+#Tététou 10-14 fixed
+nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
+                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
+#Tététou 10-14 outreach
+nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
+                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
 
+#Tététou 15-20 fixed
+nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
+                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
 
+#Tététou 15-20 outreach
+nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
+                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+                   !is.na(desc_cohort$his_where),])
 
+###### remove penta3 visits to check duplicate codes
+data_clean_coh<-data_clean[!data_clean$redcap_event_name=="penta3ipti_2_4_mon_arm_1",]
+#duplicates?
+n_occur <- data.frame(table(data_clean_coh$study_number))
+n_occur[n_occur$Freq > 1]
+#site1
+data_clean_coh1 <- data_clean_coh[grep("COH-1-1-1-",data_clean_coh$study_number),]
+data_clean_coh2 <- data_clean_coh[grep("COH-1-2-1-",data_clean_coh$study_number),]
+data_clean_coh3 <- data_clean_coh[grep("COH-1-3-1-",data_clean_coh$study_number),]
+data_clean_coh4 <- data_clean_coh[grep("COH-1-4-1-",data_clean_coh$study_number),]
 
+write.csv(data_clean_coh1, 'study_numbers_wahala.csv', row.names = F)
+write.csv(data_clean_coh2, 'study_numbers_amakpape.csv', row.names = F)
+write.csv(data_clean_coh1, 'study_numbers_hahomegbe.csv', row.names = F)
+write.csv(data_clean_coh1, 'study_numbers_tetetou.csv', row.names = F)
 
