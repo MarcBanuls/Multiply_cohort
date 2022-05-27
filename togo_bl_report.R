@@ -292,15 +292,22 @@ nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks 
 data_clean_coh<-data_clean[!data_clean$redcap_event_name=="penta3ipti_2_4_mon_arm_1",]
 #duplicates?
 n_occur <- data.frame(table(data_clean_coh$study_number))
-n_occur[n_occur$Freq > 1]
+n_occur[n_occur$Freq > 1,]
 #site1
 data_clean_coh1 <- data_clean_coh[grep("COH-1-1-1-",data_clean_coh$study_number),]
+data_clean_coh1 <- data_clean_coh1[,c('record_id','study_number')]
+
 data_clean_coh2 <- data_clean_coh[grep("COH-1-2-1-",data_clean_coh$study_number),]
+data_clean_coh2 <- data_clean_coh2[,c('record_id','study_number')]
+
 data_clean_coh3 <- data_clean_coh[grep("COH-1-3-1-",data_clean_coh$study_number),]
+data_clean_coh3 <- data_clean_coh3[,c('record_id','study_number')]
+
 data_clean_coh4 <- data_clean_coh[grep("COH-1-4-1-",data_clean_coh$study_number),]
+data_clean_coh4 <- data_clean_coh4[,c('record_id','study_number')]
 
 write.csv(data_clean_coh1, 'study_numbers_wahala.csv', row.names = F)
 write.csv(data_clean_coh2, 'study_numbers_amakpape.csv', row.names = F)
-write.csv(data_clean_coh1, 'study_numbers_hahomegbe.csv', row.names = F)
-write.csv(data_clean_coh1, 'study_numbers_tetetou.csv', row.names = F)
+write.csv(data_clean_coh3, 'study_numbers_hahomegbe.csv', row.names = F)
+write.csv(data_clean_coh4, 'study_numbers_tetetou.csv', row.names = F)
 
