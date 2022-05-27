@@ -22,7 +22,7 @@ tokens.R
 .Rproj.user/
 
 # Output csvs
-.csv
+*.csv
 
 # produced vignettes
 vignettes/*.html
