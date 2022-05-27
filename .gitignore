@@ -21,6 +21,9 @@ tokens.R
 # RStudio files
 .Rproj.user/
 
+# Output csvs
+.csv
+
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
