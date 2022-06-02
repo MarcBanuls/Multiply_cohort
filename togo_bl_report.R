@@ -29,7 +29,7 @@ rcon <- redcapConnection(api.url, api.token)
 my.fields <- c('record_id', 'screening_district', 'screening_hf', 'screening_study_number_cohort','screening_child_number',
                'death_complete','withdrawal_complete', 'wdrawal_reason', 'community_complete','health_facility_complete',
                'morb_malaria_result', 'unsch_malaria_blood_result', 'unsch_malaria_rdt_result', 'tests_complete', 'rdt_malaria_result',
-               'his_where', 'screening_dob_weeks')
+               'his_where', 'screening_dob_weeks', 'int_sp', 'his_fill_date')
 my.events <- c('penta2ipti1_3_mont_arm_1',
                'penta3ipti_2_4_mon_arm_1',
                'mrv1ipti_3_9_month_arm_1',
@@ -116,7 +116,7 @@ end_fu <- end_fu[,-c(2:8)]
 
 # Merge the two dataframes to have all data in one row per record_id
 # (Named hhs_data due to reuse of tiptop functions that only worked with hhs data, not rdt)
-cohort_data <- merge(recruitment, end_fu, by = "record_id", all.x = TRUE)
+cohort_data <- merge(penta2_3m, end_fu, by = "record_id", all.x = TRUE)
 
 # Filter by district. Only 1 district in Togo, line not usable.
 #hhs_data = hhs_data[hhs_data$district == study_area_id, ]
@@ -139,7 +139,7 @@ table(!is.na(cohort_data$death_reported_date))
 #number of hospitalisation (only malaria) TODO
 
 #use reduce to merge more than 2 df in one function
-Reduce(function(...) merge(..., all=TRUE), list(df1, df2, df3))
+#Reduce(function(...) merge(..., all=TRUE), list(df1, df2, df3))
 
 
 # use %in% to count number of values that appear in each df?
@@ -177,7 +177,8 @@ Reduce(function(...) merge(..., all=TRUE), list(df1, df2, df3))
 #Number of hospitalization for malaria
 indicators <- c('Number of SOC cohort', 'Number of MULTIPLY cohort', 'Number of missed visits',
                 'Number of deaths', 'Number of withdrawals', 'Number of migrations', 'Number of morbidity events',
-                'Number of malaria cases', 'Number of hospitalization all', 'Number of hospitalization for malaria')
+                'Number of malaria cases', 'Number of hospitalization all', 'Number of hospitalization for malaria',
+                '')
 number <- c(sum(data_clean$screening_study_number_cohort == 1, na.rm = TRUE), sum(data_clean$screening_study_number_cohort == 2, na.rm = TRUE),
             0, sum(data_clean$death_complete == 2, na.rm = TRUE), sum(data_clean$withdrawal_complete == 2, na.rm = TRUE), 
             sum(data_clean$wdrawal_reason == 3, na.rm = TRUE), 0, 0, 0, 0)
@@ -310,4 +311,20 @@ write.csv(data_clean_coh1, 'study_numbers_wahala.csv', row.names = F)
 write.csv(data_clean_coh2, 'study_numbers_amakpape.csv', row.names = F)
 write.csv(data_clean_coh3, 'study_numbers_hahomegbe.csv', row.names = F)
 write.csv(data_clean_coh4, 'study_numbers_tetetou.csv', row.names = F)
+
+
+#######
+#######
+#######
+#check when the "two weeks between recruitment and ipti administration is correct or not
+#but if 5 weeks after penta 2 not show
+#join penta2 and penta3
+penta2_3 <- merge(penta2_3m,penta3_4m, by = 'record_id')
+
+weektimes <- as.data.frame(as.numeric(difftime(strptime(penta3_4m$int_date, format = "%Y-%m-%d"),
+         strptime(penta2_3m$int_date, format = "%Y-%m-%d"),units="weeks")))
+
+weektimes <- as.data.frame(c(record_id = penta2_3$record_id, diffweeks = as.numeric(difftime(strptime(penta2_3$int_date.y, format = "%Y-%m-%d"),
+                                               strptime(penta2_3$int_date.x, format = "%Y-%m-%d"),units="weeks"))))
+
 
