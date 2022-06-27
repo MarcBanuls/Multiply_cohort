@@ -177,8 +177,7 @@ table(!is.na(cohort_data$death_reported_date))
 #Number of hospitalization for malaria
 indicators <- c('Number of SOC cohort', 'Number of MULTIPLY cohort', 'Number of missed visits',
                 'Number of deaths', 'Number of withdrawals', 'Number of migrations', 'Number of morbidity events',
-                'Number of malaria cases', 'Number of hospitalization all', 'Number of hospitalization for malaria',
-                '')
+                'Number of malaria cases', 'Number of hospitalization all', 'Number of hospitalization for malaria')
 number <- c(sum(data_clean$screening_study_number_cohort == 1, na.rm = TRUE), sum(data_clean$screening_study_number_cohort == 2, na.rm = TRUE),
             0, sum(data_clean$death_complete == 2, na.rm = TRUE), sum(data_clean$withdrawal_complete == 2, na.rm = TRUE), 
             sum(data_clean$wdrawal_reason == 3, na.rm = TRUE), 0, 0, 0, 0)
@@ -187,10 +186,10 @@ report <- data.frame(Indicators = indicators, N = number )
 write.csv(report, file = paste0('multiply_togo_cohort_indicators_', Sys.Date(), '.csv'), row.names = F)
 
 #####description cohort togo #####
-# pick screening_dob_weeks, screening_hf and his_where cols 6,7,10
+# pick screening_dob_weeks, screening_hf and his_where cols 6,7,11
 #his_where: 1=HF 2=outreach, screening_dob_weeks: 10-14weeks or 15-20weeks
 #screening_hf:1	CMS Wahala 2	USP Amakpape 3	USP Hahomegbe 4	USP Tetetou
-desc_cohort <- data_clean[,c(6,7,10)]
+desc_cohort <- data_clean[,c(6,7,11)]
 #filter from first desc_cohort, testing
 #screening_hf=1,screening_dob_weeks>=10 and <=14, his_where =1
 #wahala 10-14 fixed

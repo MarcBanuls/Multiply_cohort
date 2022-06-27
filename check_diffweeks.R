@@ -75,17 +75,42 @@ penta2_3 <- merge(penta2_3m,penta3_4m, by = 'record_id')
 
 
 weektimes_penta2_3 <- as.data.frame(as.numeric(difftime(strptime(penta2_3$his_fill_date.y, format = "%Y-%m-%d"),
-                                                                                             strptime(penta2_3$his_fill_date.x, format = "%Y-%m-%d"),units="weeks")))
+                                                                                             strptime(penta2_3$his_fill_date.x, format = "%Y-%m-%d"),units="days")))
 weektimes_penta2_3 <- cbind(penta2_3$record_id,weektimes_penta2_3)
-names(weektimes_penta2_3) <- c('record_id','difftime_weeks')
+names(weektimes_penta2_3) <- c('record_id','difftime_days')
 
 #pick the ones that have more than 2 weeks (14)
-penta2_3_2w <- weektimes_penta2_3[weektimes_penta2_3$difftime_weeks > 14,]
+penta2_3_2w <- weektimes_penta2_3[weektimes_penta2_3$difftime_days > 14,]
 # check which ones have more than 2 weeks (14) but less than 5 (35)
-penta2_3_5w <- weektimes_penta2_3[weektimes_penta2_3$difftime_weeks > 14 & weektimes_penta2_3$difftime_weeks < 35,]
+penta2_3_5w <- weektimes_penta2_3[weektimes_penta2_3$difftime_days > 14 & weektimes_penta2_3$difftime_days < 35,]
 
 # check which ones have more than 5 weeks (35)
-penta2_3_m5w <- weektimes_penta2_3[weektimes_penta2_3$difftime_weeks > 35,]
+penta2_3_m5w <- weektimes_penta2_3[weektimes_penta2_3$difftime_days > 35,]
+
+###
+###
+# another approach, check if penta 2 visit is 2 weeks or more from TODAY and don't have data on penta 3
+
+penta2_3_all <- merge(penta2_3m,penta3_4m, by = 'record_id', all.x = TRUE)
+
+#filter by people that does not have penta3 data
+penta2_3_all_filt <- penta2_3_all[is.na(penta2_3_all$his_fill_date.y),]
+
+#difftime from time of visit to today:
+difftime_sys_penta23 <- as.data.frame(as.numeric(difftime(strptime(Sys.Date(), format = "%Y-%m-%d"),
+                                                          strptime(penta2_3_all_filt$his_fill_date.x, format = "%Y-%m-%d"),units="weeks")))
+
+difftime_sys_penta23 <- cbind(penta2_3_all_filt$record_id,difftime_sys_penta23)
+names(difftime_sys_penta23) <- c('record_id','difftime_weeks')
+
+
+#pick the ones that have more than 2 weeks (14)
+difftime_sys_penta23_2w <- difftime_sys_penta23[difftime_sys_penta23$difftime_weeks > 2,]
+# check which ones have more than 2 weeks (14) but less than 5 (35)
+difftime_sys_penta23_5w <- difftime_sys_penta23[difftime_sys_penta23$difftime_weeks > 2 & difftime_sys_penta23$difftime_weeks < 5,]
+
+# check which ones have more than 5 weeks (35)
+difftime_sys_penta23_m5w <- difftime_sys_penta23[difftime_sys_penta23$difftime_weeks > 5,]
 
 
 
