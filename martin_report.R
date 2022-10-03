@@ -6,10 +6,15 @@ api.url <- maternal_api
 #togo_bl_token
 api.token <- togo_bl_token
 
-#rodion excel:
-#penta2, penta3, rr1 and passive detection complete or not, numbers inside soc or multiply cohort
-# recruitment_complete, id_complete, clinical_history_complete, vaccination_status_complete, intervention_complete,
-# tests_complete, health_facility_complete, community_complete, withdrawal_complete, death_complete
+#  I need to have a raw data for every child in REDCap with:
+#   
+# - the identifier 
+# - the vaccination booklet number
+# - the health facility 
+# - the recruitment status
+# - Penta2 status
+# - Penta3 status
+# - RR1 status
 
 rcon <- redcapConnection(api.url, api.token)
 
@@ -17,10 +22,10 @@ my.fields <- c('record_id', 'screening_district', 'screening_hf', 'screening_stu
                'recruitment_complete', 'id_complete', 'clinical_history_complete', 'vaccination_status_complete',
                'intervention_complete', 'tests_complete', 'health_facility_complete', 'community_complete',
                'withdrawal_complete', 'death_complete')
-               
-               # 'death_complete','withdrawal_complete', 'wdrawal_reason', 'community_complete','health_facility_complete',
-               # 'morb_malaria_result', 'unsch_malaria_blood_result', 'unsch_malaria_rdt_result', 'tests_complete', 'rdt_malaria_result',
-               # 'his_where', 'screening_dob_weeks', 'int_sp', 'his_fill_date')
+
+# 'death_complete','withdrawal_complete', 'wdrawal_reason', 'community_complete','health_facility_complete',
+# 'morb_malaria_result', 'unsch_malaria_blood_result', 'unsch_malaria_rdt_result', 'tests_complete', 'rdt_malaria_result',
+# 'his_where', 'screening_dob_weeks', 'int_sp', 'his_fill_date')
 my.events <- c('penta2ipti1_3_mont_arm_1',
                'penta3ipti_2_4_mon_arm_1',
                'mrv1ipti_3_9_month_arm_1',
@@ -29,9 +34,9 @@ my.events <- c('penta2ipti1_3_mont_arm_1',
                'passive_detection_arm_1',
                'end_of_fu_arm_1')
 
-data_rod <- data.frame()
+data_mart <- data.frame()
 
-data_rod <- exportRecords(
+data_mart <- exportRecords(
   rcon,
   factors = F,
   fields = my.fields,
@@ -40,9 +45,9 @@ data_rod <- exportRecords(
   
 )
 
-data_clean <- data_rod
-data_clean$study_number <- paste('COH',data_rod$screening_district,data_rod$screening_hf,
-                                 data_rod$screening_study_number_cohort,
+data_clean <- data_mart
+data_clean$study_number <- paste('COH',data_mart$screening_district,data_mart$screening_hf,
+                                 data_mart$screening_study_number_cohort,
                                  str_pad(data_clean$screening_child_number, 3,side = 'left', pad = "0"),
                                  sep = '-')
 
@@ -146,11 +151,3 @@ nrow(data_clean_mrv1_multi)
 nrow(data_clean_passive_soc)
 #passivemulti
 nrow(data_clean_passive_multi)
-
-
-
-
-
-
-
-
