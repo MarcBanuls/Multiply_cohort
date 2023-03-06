@@ -118,6 +118,7 @@ data_clean_mrv1_multi <- mrv1_9m_cohort %>%
   filter(clinical_history_complete == 2 & vaccination_status_complete == 2 &
            intervention_complete == 2 & cohort == 2) #0
 
+#updatea el track changes PALETO
 ###passive detection crf:
 data_clean_passive_soc <- passive_detection_cohort %>%
   filter((health_facility_complete == 2 & cohort == 1) | (community_complete == 2 & cohort == 1)) #0

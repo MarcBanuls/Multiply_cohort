@@ -251,7 +251,7 @@ number_2 <- c(
 #       na.rm = TRUE))
 report <- data.frame(Indicators = indicators, N = number_2 )
 
-write.csv(report, file = paste0('multiply_togo_cohort_indicators', Sys.Date(), '.csv'), row.names = F)
+write.csv(report, file = paste0('multiply_togo_cohort_indicators_', Sys.Date(), '.csv'), row.names = F)
 
 #####description cohort togo #####
 # pick screening_dob_weeks, screening_hf and his_where cols 6,7,11
