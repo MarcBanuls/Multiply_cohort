@@ -1,6 +1,7 @@
 library(redcapAPI)
 library(stringr)
 library(dplyr)
+library(xlsx)
 source("tokens.R")
 api.url <- maternal_api
 #togo_bl_token
@@ -190,7 +191,7 @@ indicators <- c('Number of SOC cohort', 'Number of MULTIPLY cohort', 'Number of 
 ####
 
 
-######
+###### numbers total cohort
 number_2 <- c(
   #number of soc cohort
   sum(data_clean$recruitment_complete == 2 & data_clean$clinical_history_complete == 2 & data_clean$vaccination_status_complete == 2 &
@@ -218,6 +219,99 @@ number_2 <- c(
   #number of hospitalization for malaria
   sum((data_clean$unsch_hosp == 1 | data_clean$unsch_ref_disc_hosp == 1) &
         (data_clean$unsch_malaria_rdt_result ==1 | data_clean$unsch_malaria_blood_result == 1 | data_clean$unsch_haemoglobin_result >=5),
+      na.rm = TRUE))
+
+#gonna check how to know which record id are from soc or multiply cohort
+soc_cohort <- data_clean %>% 
+  select(record_id,screening_study_number_cohort) %>% 
+  filter(screening_study_number_cohort == 1)
+
+multiply_cohort <- data_clean %>% 
+  select(record_id,screening_study_number_cohort) %>% 
+  filter(screening_study_number_cohort == 2)
+all_cohort <-data_clean %>% 
+  select(record_id,screening_study_number_cohort) %>% 
+  filter(!is.na(screening_study_number_cohort)) %>% 
+  rename('cohort' = 'screening_study_number_cohort')
+
+#fem un merge amb data_clean i així tots tindran el screening study_number_cohort? provem
+data_clean_cohort <- merge(data_clean, all_cohort, all = TRUE)
+
+
+#numbers SOC COHORT
+number_soc <- c(
+  #number of soc cohort
+  #redundant here
+  #same
+  # sum(data_clean_cohort$recruitment_complete == 2 & data_clean_cohort$clinical_history_complete == 2 & data_clean_cohort$vaccination_status_complete == 2 &
+  #       data_clean_cohort$intervention_complete == 2 & data_clean_cohort$screening_study_number_cohort == 1, na.rm = TRUE),
+  254,
+  #number of multiply cohort
+  0,
+  # sum(data_clean_cohort$recruitment_complete == 2 & data_clean_cohort$clinical_history_complete == 2 & data_clean_cohort$vaccination_status_complete == 2 &
+  #       data_clean_cohort$intervention_complete == 2 & data_clean_cohort$screening_study_number_cohort == 2, na.rm = TRUE),
+  
+  #number of missed visits should I check?
+  0,
+  #number of deaths
+  sum(data_clean_cohort$death_complete == 2 & data_clean_cohort$cohort == 1, na.rm = TRUE), 
+  #number of withdrawals
+  sum(data_clean_cohort$withdrawal_complete == 2 & data_clean_cohort$cohort == 1, na.rm = TRUE), 
+  #number of migrations
+  sum(data_clean_cohort$wdrawal_reason == 3 & data_clean_cohort$cohort == 1, na.rm = TRUE),
+  #number of morbidity events
+  sum((data_clean_cohort$community_complete == 2 | data_clean_cohort$health_facility_complete == 2) 
+      & data_clean_cohort$cohort == 1, na.rm = TRUE),
+  #number of malaria cases
+  # Number of malaria cases (morb_malaria_result == 1, his_malaria_confirmed ==1, rdt_malaria_result == 1, unsch_malaria_rdt_result == 1,
+  #                         unsch_malaria_blood_result ==1, unsch_haemoglobin_result ==1) PENDING
+  sum((data_clean_cohort$morb_malaria_result == 1 | data_clean_cohort$his_malaria_confirmed == 1 |
+        data_clean_cohort$unsch_malaria_rdt_result == 1 | data_clean_cohort$unsch_malaria_blood_result == 1 | data_clean_cohort$unsch_haemoglobin_result >= 5)
+      & data_clean_cohort$cohort == 1, na.rm = TRUE),
+  #number of hospitalization all
+  sum((data_clean_cohort$unsch_hosp == 1 | data_clean_cohort$unsch_ref_disc_hosp == 1) & data_clean_cohort$cohort == 1, na.rm = TRUE),
+  #number of hospitalization for malaria
+  sum((data_clean_cohort$unsch_hosp == 1 | data_clean_cohort$unsch_ref_disc_hosp == 1) &
+        (data_clean_cohort$unsch_malaria_rdt_result ==1 | data_clean_cohort$unsch_malaria_blood_result == 1 | data_clean_cohort$unsch_haemoglobin_result >=5)
+      & data_clean_cohort$cohort == 1,
+      na.rm = TRUE))
+
+#numbers SOC COHORT
+number_multiply <- c(
+  #number of soc cohort
+  #redundant here
+  #same
+  # sum(data_clean_cohort$recruitment_complete == 2 & data_clean_cohort$clinical_history_complete == 2 & data_clean_cohort$vaccination_status_complete == 2 &
+  #       data_clean_cohort$intervention_complete == 2 & data_clean_cohort$screening_study_number_cohort == 1, na.rm = TRUE),
+  0,
+  #number of multiply cohort
+  257,
+  # sum(data_clean_cohort$recruitment_complete == 2 & data_clean_cohort$clinical_history_complete == 2 & data_clean_cohort$vaccination_status_complete == 2 &
+  #       data_clean_cohort$intervention_complete == 2 & data_clean_cohort$screening_study_number_cohort == 2, na.rm = TRUE),
+  
+  #number of missed visits should I check?
+  0,
+  #number of deaths
+  sum(data_clean_cohort$death_complete == 2 & data_clean_cohort$cohort == 2, na.rm = TRUE), 
+  #number of withdrawals
+  sum(data_clean_cohort$withdrawal_complete == 2 & data_clean_cohort$cohort == 2, na.rm = TRUE), 
+  #number of migrations
+  sum(data_clean_cohort$wdrawal_reason == 3 & data_clean_cohort$cohort == 2, na.rm = TRUE),
+  #number of morbidity events
+  sum((data_clean_cohort$community_complete == 2 | data_clean_cohort$health_facility_complete == 2) 
+      & data_clean_cohort$cohort == 2, na.rm = TRUE),
+  #number of malaria cases
+  # Number of malaria cases (morb_malaria_result == 1, his_malaria_confirmed ==1, rdt_malaria_result == 1, unsch_malaria_rdt_result == 1,
+  #                         unsch_malaria_blood_result ==1, unsch_haemoglobin_result ==1) PENDING
+  sum((data_clean_cohort$morb_malaria_result == 1 | data_clean_cohort$his_malaria_confirmed == 1 |
+         data_clean_cohort$unsch_malaria_rdt_result == 1 | data_clean_cohort$unsch_malaria_blood_result == 1 | data_clean_cohort$unsch_haemoglobin_result >= 5)
+      & data_clean_cohort$cohort == 2, na.rm = TRUE),
+  #number of hospitalization all
+  sum((data_clean_cohort$unsch_hosp == 1 | data_clean_cohort$unsch_ref_disc_hosp == 1) & data_clean_cohort$cohort == 2, na.rm = TRUE),
+  #number of hospitalization for malaria
+  sum((data_clean_cohort$unsch_hosp == 1 | data_clean_cohort$unsch_ref_disc_hosp == 1) &
+        (data_clean_cohort$unsch_malaria_rdt_result ==1 | data_clean_cohort$unsch_malaria_blood_result == 1 | data_clean_cohort$unsch_haemoglobin_result >=5)
+      & data_clean_cohort$cohort == 2,
       na.rm = TRUE))
 
 
@@ -249,9 +343,10 @@ number_2 <- c(
 #   sum((data_clean$unsch_hosp == 1 | data_clean$unsch_ref_disc_hosp == 1) &
 #         (data_clean$unsch_malaria_rdt_result ==1 | data_clean$unsch_malaria_blood_result == 1 | data_clean$unsch_haemoglobin_result >=5),
 #       na.rm = TRUE))
-report <- data.frame(Indicators = indicators, N = number_2 )
+report <- data.frame(Indicators = indicators, N = number_2, n_soc = number_soc, n_multiply = number_multiply)
 
-write.csv(report, file = paste0('multiply_togo_cohort_indicators_', Sys.Date(), '.csv'), row.names = F)
+#write.csv(report, file = paste0('multiply_togo_cohort_indicators_', Sys.Date(), '.csv'), row.names = F)
+write.xlsx(report, file = paste0('multiply_togo_cohort_indicators_', Sys.Date(), '.xlsx'), row.names = F)
 
 #####description cohort togo #####
 # pick screening_dob_weeks, screening_hf and his_where cols 6,7,11
@@ -261,329 +356,329 @@ desc_cohort <- data_clean[,c(6,7,8,12)]
 #filter from first desc_cohort, testing
 #screening_hf=1,screening_dob_weeks>=10 and <=14, his_where =1
 #
-#### OVERALL####
-#wahala 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
-                             desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                             !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                             !is.na(desc_cohort$his_where),])
-
-
-#wahala 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#wahala 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#wahala 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#amakpape 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-#amakpape 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#amakpape 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#amakpape 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-
-#Hahomégbé 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-#Hahomégbé 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#Hahomégbé 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#Hahomégbé 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-
-#Tététou 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-#Tététou 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#Tététou 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#Tététou 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where),])
-
-#### SOC####
-#wahala 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 & 
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-
-#wahala 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#wahala 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#wahala 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#amakpape 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-#amakpape 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#amakpape 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#amakpape 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-
-#Hahomégbé 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-#Hahomégbé 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#Hahomégbé 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#Hahomégbé 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-
-#Tététou 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-#Tététou 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#Tététou 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#Tététou 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-
-#### MULTIPLY ####
-#wahala 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 & 
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-
-#wahala 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#wahala 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#wahala 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#amakpape 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-#amakpape 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#amakpape 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#amakpape 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-
-#Hahomégbé 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-#Hahomégbé 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#Hahomégbé 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#Hahomégbé 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-
-#Tététou 10-14 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-#Tététou 10-14 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
-                   desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#Tététou 15-20 fixed
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
-
-#Tététou 15-20 outreach
-nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
-                   desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
-                   !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
-                   !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
-                   !is.na(desc_cohort$screening_study_number_cohort),])
+# #### OVERALL####
+# #wahala 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
+#                              desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                              !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                              !is.na(desc_cohort$his_where),])
+# 
+# 
+# #wahala 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #wahala 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #wahala 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #amakpape 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# #amakpape 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #amakpape 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #amakpape 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# 
+# #Hahomégbé 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# #Hahomégbé 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #Hahomégbé 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #Hahomégbé 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# 
+# #Tététou 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# #Tététou 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #Tététou 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #Tététou 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where),])
+# 
+# #### SOC####
+# #wahala 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 & 
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# 
+# #wahala 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #wahala 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #wahala 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #amakpape 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# #amakpape 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #amakpape 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #amakpape 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# 
+# #Hahomégbé 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# #Hahomégbé 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #Hahomégbé 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #Hahomégbé 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# 
+# #Tététou 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# #Tététou 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #Tététou 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #Tététou 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==1 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# 
+# #### MULTIPLY ####
+# #wahala 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 & 
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# 
+# #wahala 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #wahala 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #wahala 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==1 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #amakpape 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# #amakpape 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #amakpape 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #amakpape 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==2 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# 
+# #Hahomégbé 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# #Hahomégbé 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #Hahomégbé 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #Hahomégbé 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==3 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# 
+# #Tététou 10-14 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# #Tététou 10-14 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 10 &
+#                    desc_cohort$screening_dob_weeks <=14 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #Tététou 15-20 fixed
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==1 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
+# 
+# #Tététou 15-20 outreach
+# nrow(desc_cohort[desc_cohort$screening_hf ==4 & desc_cohort$screening_dob_weeks >= 15 &
+#                    desc_cohort$screening_dob_weeks <=20 & desc_cohort$his_where ==2 &
+#                    !is.na(desc_cohort$screening_hf) & !is.na(desc_cohort$screening_dob_weeks) &
+#                    !is.na(desc_cohort$his_where) & desc_cohort$screening_study_number_cohort ==2 &
+#                    !is.na(desc_cohort$screening_study_number_cohort),])
 
 ###### remove penta3 visits to check duplicate codes
 data_clean_coh<-data_clean[!data_clean$redcap_event_name=="penta3ipti_2_4_mon_arm_1",]
@@ -627,6 +722,18 @@ weektimes <- as.data.frame(as.numeric(difftime(strptime(penta3_4m$int_date, form
 
 weektimes <- as.data.frame(c(record_id = penta2_3$record_id, diffweeks = as.numeric(difftime(strptime(penta2_3$int_date.y, format = "%Y-%m-%d"),
                                                strptime(penta2_3$int_date.x, format = "%Y-%m-%d"),units="weeks"))))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
