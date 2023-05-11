@@ -73,6 +73,10 @@ penta3_4m_cohort$cohort <- ifelse(penta3_4m_cohort$record_id %in% penta2_soc$rec
 mrv1_9m_cohort <- mrv1_9m
 mrv1_9m_cohort$cohort <- ifelse(mrv1_9m_cohort$record_id %in% penta2_soc$record_id, 1, 2)
 
+#mrv2
+mrv2_15m_cohort <- mrv2_15m
+mrv2_15m_cohort$cohort <- ifelse(mrv2_15m_cohort$record_id %in% penta2_soc$record_id, 1, 2)
+
 #passive detection crf:
 passive_detection_cohort <- passive_detection
 passive_detection_cohort$cohort <- ifelse(passive_detection_cohort$record_id %in% penta2_soc$record_id, 1, 2)
@@ -85,12 +89,12 @@ passive_detection_cohort$cohort <- ifelse(passive_detection_cohort$record_id %in
 #soc cohort
 data_clean_penta2_soc <- penta2_3m %>%
   filter(recruitment_complete == 2 & clinical_history_complete == 2 & vaccination_status_complete == 2 &
-           intervention_complete == 2 & screening_study_number_cohort == 1) #255
+           intervention_complete == 2 & screening_study_number_cohort == 1) #254
 
 #multiply cohort
 data_clean_penta2_multi <- penta2_3m %>%
   filter(recruitment_complete == 2 & clinical_history_complete == 2 & vaccination_status_complete == 2 &
-           intervention_complete == 2 & screening_study_number_cohort == 2) #55
+           intervention_complete == 2 & screening_study_number_cohort == 2) #257
 
 
 
@@ -118,6 +122,19 @@ data_clean_mrv1_multi <- mrv1_9m_cohort %>%
   filter(clinical_history_complete == 2 & vaccination_status_complete == 2 &
            intervention_complete == 2 & cohort == 2) #0
 
+
+###mrv2 complete crf
+
+#soc cohort
+data_clean_mrv2_soc <- mrv2_15m_cohort %>%
+  filter(clinical_history_complete == 2 & vaccination_status_complete == 2 &
+           intervention_complete == 2 & cohort == 1) #4
+
+#multiply cohort
+data_clean_mrv2_multi <- mrv2_15m_cohort %>%
+  filter(clinical_history_complete == 2 & vaccination_status_complete == 2 &
+           intervention_complete == 2 & cohort == 2) #0
+
 #updatea el track changes PALETO
 ###passive detection crf:
 data_clean_passive_soc <- passive_detection_cohort %>%
@@ -142,6 +159,10 @@ nrow(data_clean_penta3_multi)
 nrow(data_clean_mrv1_soc)
 #rr13multi
 nrow(data_clean_mrv1_multi)
+
+#rr2soc
+
+#rr2multi
 
 ##passivesoc
 nrow(data_clean_passive_soc)
