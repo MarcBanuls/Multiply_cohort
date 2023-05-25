@@ -159,6 +159,10 @@ nrow(data_clean_penta3_multi)
 nrow(data_clean_mrv1_soc)
 #rr13multi
 nrow(data_clean_mrv1_multi)
+#rr2soc
+nrow(data_clean_mrv2_soc)
+#rr2multi
+nrow(data_clean_mrv2_multi)
 
 #rr2soc
 
