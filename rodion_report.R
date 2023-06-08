@@ -1,6 +1,7 @@
 library(redcapAPI)
 library(stringr)
 library(dplyr)
+library(openxlsx)
 source("tokens.R")
 api.url <- maternal_api
 #togo_bl_token
@@ -339,6 +340,139 @@ nrow(data_clean_mrv2_multi)
 nrow(data_clean_passive_soc)
 #passivemulti
 nrow(data_clean_passive_multi)
+
+
+#create automated table (it's about time my man)
+total <- c(nrow(data_clean_penta2_soc) + nrow(data_clean_penta2_multi),
+           nrow(data_clean_penta3_soc) + nrow(data_clean_penta3_multi),
+           nrow(data_clean_mrv1_soc) + nrow(data_clean_mrv1_multi),
+           nrow(data_clean_mrv2_soc) + nrow(data_clean_mrv2_multi),
+           nrow(data_clean_passive_soc) + nrow(data_clean_passive_multi))
+total_soc <- c(nrow(data_clean_penta2_soc), nrow(data_clean_penta3_soc), nrow(data_clean_mrv1_soc), nrow(data_clean_mrv2_soc),
+               nrow(data_clean_passive_soc))
+total_multi <- c(nrow(data_clean_penta2_multi), nrow(data_clean_penta3_multi), nrow(data_clean_mrv1_multi), nrow(data_clean_mrv2_multi),
+               nrow(data_clean_passive_multi))
+
+#hf1
+wahala_total <- c(nrow(penta2_soc_hf1) + nrow(penta2_multi_hf1),
+                  nrow(penta3_soc_hf1) + nrow(penta3_multi_hf1),
+                  nrow(mrv1_soc_hf1) + nrow(mrv1_multi_hf1),
+                  nrow(mrv2_soc_hf1) + nrow(mrv2_multi_hf1),
+                  nrow(passive_soc_hf1) + nrow(passive_multi_hf1))
+wahala_soc <- c(nrow(penta2_soc_hf1), nrow(penta3_soc_hf1), nrow(mrv1_soc_hf1), nrow(mrv2_soc_hf1), nrow(passive_soc_hf1))
+wahala_multi <- c(nrow(penta2_multi_hf1), nrow(penta3_multi_hf1), nrow(mrv1_multi_hf1), nrow(mrv2_multi_hf1), nrow(passive_multi_hf1))
+
+#hf2
+amakpape_total <- c(nrow(penta2_soc_hf2) + nrow(penta2_multi_hf2),
+                    nrow(penta3_soc_hf2) + nrow(penta3_multi_hf2),
+                    nrow(mrv1_soc_hf2) + nrow(mrv1_multi_hf2),
+                    nrow(mrv2_soc_hf2) + nrow(mrv2_multi_hf2),
+                    nrow(passive_soc_hf2) + nrow(passive_multi_hf2))
+amakpape_soc <- c(nrow(penta2_soc_hf2), nrow(penta3_soc_hf2), nrow(mrv1_soc_hf2), nrow(mrv2_soc_hf2), nrow(passive_soc_hf2))
+amakpape_multi <- c(nrow(penta2_multi_hf2), nrow(penta3_multi_hf2), nrow(mrv1_multi_hf2), nrow(mrv2_multi_hf2), nrow(passive_multi_hf2))
+
+#hf3
+hahomegbe_total <- c(nrow(penta2_soc_hf3) + nrow(penta2_multi_hf3),
+                     nrow(penta3_soc_hf3) + nrow(penta3_multi_hf3),
+                     nrow(mrv1_soc_hf3) + nrow(mrv1_multi_hf3),
+                     nrow(mrv2_soc_hf3) + nrow(mrv2_multi_hf3),
+                     nrow(passive_soc_hf3) + nrow(passive_multi_hf3))
+hahomegbe_soc <- c(nrow(penta2_soc_hf3), nrow(penta3_soc_hf3), nrow(mrv1_soc_hf3), nrow(mrv2_soc_hf3), nrow(passive_soc_hf3))
+hahomegbe_multi <- c(nrow(penta2_multi_hf3), nrow(penta3_multi_hf3), nrow(mrv1_multi_hf3), nrow(mrv2_multi_hf3), nrow(passive_multi_hf3))
+
+#hf4
+tetetou_total <- c(nrow(penta2_soc_hf4) + nrow(penta2_multi_hf4),
+                   nrow(penta3_soc_hf4) + nrow(penta3_multi_hf4),
+                   nrow(mrv1_soc_hf4) + nrow(mrv1_multi_hf4),
+                   nrow(mrv2_soc_hf4) + nrow(mrv2_multi_hf4),
+                   nrow(passive_soc_hf4) + nrow(passive_multi_hf4))
+tetetou_soc <- c(nrow(penta2_soc_hf4), nrow(penta3_soc_hf4), nrow(mrv1_soc_hf4), nrow(mrv2_soc_hf4), nrow(passive_soc_hf4))
+tetetou_multi <- c(nrow(penta2_multi_hf4), nrow(penta3_multi_hf4), nrow(mrv1_multi_hf4), nrow(mrv2_multi_hf4), nrow(passive_multi_hf4))
+
+rownames <- c('PENTA 2', 'PENTA 3', 'RR 1', 'RR 2', 'PASSIVE DETECTION')
+track_changes <- data.frame(rownames,total,total_soc,total_multi,wahala_total,wahala_soc,wahala_multi,amakpape_total,amakpape_soc,amakpape_multi,
+                            hahomegbe_total,hahomegbe_soc,hahomegbe_multi,tetetou_total,tetetou_soc,tetetou_multi)
+
+#change columns  
+
+#added space on first column and no row names put, add them directly as a column
+c_names_table <- c(' ','Total-All', 'Total-SOC', 'Total-MULTIPLY','Wahala-All','Wahala-SOC', 'Wahala-MULTIPLY',
+                   'Amakpape-All', 'Amakpape-SOC', 'Amakpape-MULTIPLY','Hahomegbe-All', 'Hahomegbe-SOC', 'Hahomegbe-MULTIPLY',
+                   'Tetetou-All', 'Tetetou-SOC', 'Tetetou-MULTIPLY')
+r_names_table <- c('PENTA 2', 'PENTA 3', 'RR 1', 'RR 2', 'PASSIVE DETECTION')
+
+
+colnames(track_changes) <- c_names_table
+rownames(track_changes) <- r_names_table
+
+#let's do it pretty
+#http://www.sthda.com/english/wiki/r-xlsx-package-a-quick-start-guide-to-manipulate-excel-files-in-r#write-data-to-an-excel-file
+wb <- createWorkbook()
+addWorksheet(wb,'track_changes')
+writeDataTable(wb,'track_changes',track_changes, startCol = 3,startRow = 3,colNames = TRUE,rowNames = FALSE,
+               withFilter = FALSE)
+saveWorkbook(wb,file = paste0('G:/Mi unidad/MULTIPLY/1.Cohorts/togo/reports/reports_rodion/','track_changes_',Sys.Date(),'.xlsx'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
