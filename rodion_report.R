@@ -145,6 +145,173 @@ data_clean_passive_multi <- passive_detection_cohort %>%
   filter((health_facility_complete == 2 & cohort == 2)| (community_complete == 2 & cohort == 2)) #0
 
 
+#update to stratify by HF
+
+#before create df that checks the id and HF of each ID
+data_clean_hf <- data_clean %>% 
+  select(record_id,screening_hf) %>% 
+  filter(!is.na(screening_hf))
+
+
+#remove screening_hf from all the dfs that have them as missing and merge with the data_clean_hf so they are correctly labelled
+data_clean_penta2_soc <- data_clean_penta2_soc %>% 
+  select(-screening_hf)
+data_clean_penta2_multi <- data_clean_penta2_multi %>% 
+  select(-screening_hf)
+data_clean_penta3_soc <- data_clean_penta3_soc %>% 
+  select(-screening_hf)
+data_clean_penta3_multi <- data_clean_penta3_multi %>% 
+  select(-screening_hf)
+data_clean_mrv1_soc <- data_clean_mrv1_soc %>% 
+  select(-screening_hf)
+data_clean_mrv1_multi <- data_clean_mrv1_multi %>% 
+  select(-screening_hf)
+data_clean_mrv2_soc <- data_clean_mrv2_soc %>% 
+  select(-screening_hf)
+data_clean_mrv2_multi <- data_clean_mrv2_multi %>% 
+  select(-screening_hf)
+data_clean_passive_soc <- data_clean_passive_soc %>% 
+  select(-screening_hf)
+data_clean_passive_multi <- data_clean_passive_multi %>% 
+  select(-screening_hf)
+
+
+data_clean_penta2_soc <- merge(data_clean_penta2_soc, data_clean_hf, by= 'record_id')
+data_clean_penta3_soc <- merge(data_clean_penta3_soc, data_clean_hf, by= 'record_id')  
+data_clean_mrv1_soc <- merge(data_clean_mrv1_soc, data_clean_hf, by= 'record_id')
+data_clean_mrv2_soc <- merge(data_clean_mrv2_soc, data_clean_hf, by= 'record_id')
+data_clean_passive_soc <- merge(data_clean_passive_soc, data_clean_hf, by= 'record_id')
+
+data_clean_penta2_multi <- merge(data_clean_penta2_multi, data_clean_hf, by= 'record_id')
+data_clean_penta3_multi <- merge(data_clean_penta3_multi, data_clean_hf, by= 'record_id')  
+data_clean_mrv1_multi <- merge(data_clean_mrv1_multi, data_clean_hf, by= 'record_id')
+data_clean_mrv2_multi <- merge(data_clean_mrv2_multi, data_clean_hf, by= 'record_id')
+data_clean_passive_multi <- merge(data_clean_passive_multi, data_clean_hf, by= 'record_id')
+
+#hf1 wahala
+penta2_soc_hf1 <- data_clean_penta2_soc %>% 
+  filter(screening_hf == '1')
+
+penta2_multi_hf1 <- data_clean_penta2_multi %>% 
+  filter(screening_hf == '1')
+
+penta3_soc_hf1 <- data_clean_penta3_soc %>% 
+  filter(screening_hf == '1')
+
+penta3_multi_hf1 <- data_clean_penta3_multi %>% 
+  filter(screening_hf == '1')
+
+mrv1_soc_hf1 <- data_clean_mrv1_soc %>% 
+  filter(screening_hf == '1')
+
+mrv1_multi_hf1 <- data_clean_mrv1_multi %>% 
+  filter(screening_hf == '1')
+
+mrv2_soc_hf1 <- data_clean_mrv2_soc %>% 
+  filter(screening_hf == '1')
+
+mrv2_multi_hf1 <- data_clean_mrv2_multi %>% 
+  filter(screening_hf == '1')
+
+passive_soc_hf1 <- data_clean_passive_soc %>% 
+  filter(screening_hf == '1')
+
+passive_multi_hf1 <- data_clean_passive_multi %>% 
+  filter(screening_hf == '1')
+
+# hf2 Amakpape
+penta2_soc_hf2 <- data_clean_penta2_soc %>% 
+  filter(screening_hf == '2')
+
+penta2_multi_hf2 <- data_clean_penta2_multi %>% 
+  filter(screening_hf == '2')
+
+penta3_soc_hf2 <- data_clean_penta3_soc %>% 
+  filter(screening_hf == '2')
+
+penta3_multi_hf2 <- data_clean_penta3_multi %>% 
+  filter(screening_hf == '2')
+
+mrv1_soc_hf2 <- data_clean_mrv1_soc %>% 
+  filter(screening_hf == '2')
+
+mrv1_multi_hf2 <- data_clean_mrv1_multi %>% 
+  filter(screening_hf == '2')
+
+mrv2_soc_hf2 <- data_clean_mrv2_soc %>% 
+  filter(screening_hf == '2')
+
+mrv2_multi_hf2 <- data_clean_mrv2_multi %>% 
+  filter(screening_hf == '2')
+
+passive_soc_hf2 <- data_clean_passive_soc %>% 
+  filter(screening_hf == '2')
+
+passive_multi_hf2 <- data_clean_passive_multi %>% 
+  filter(screening_hf == '2')
+
+# hf3 Hahomegbe
+penta2_soc_hf3 <- data_clean_penta2_soc %>% 
+  filter(screening_hf == '3')
+
+penta2_multi_hf3 <- data_clean_penta2_multi %>% 
+  filter(screening_hf == '3')
+
+penta3_soc_hf3 <- data_clean_penta3_soc %>% 
+  filter(screening_hf == '3')
+
+penta3_multi_hf3 <- data_clean_penta3_multi %>% 
+  filter(screening_hf == '3')
+
+mrv1_soc_hf3 <- data_clean_mrv1_soc %>% 
+  filter(screening_hf == '3')
+
+mrv1_multi_hf3 <- data_clean_mrv1_multi %>% 
+  filter(screening_hf == '3')
+
+mrv2_soc_hf3 <- data_clean_mrv2_soc %>% 
+  filter(screening_hf == '3')
+
+mrv2_multi_hf3 <- data_clean_mrv2_multi %>% 
+  filter(screening_hf == '3')
+
+passive_soc_hf3 <- data_clean_passive_soc %>% 
+  filter(screening_hf == '3')
+
+passive_multi_hf3 <- data_clean_passive_multi %>% 
+  filter(screening_hf == '3')
+
+# hf4 Tetetou
+penta2_soc_hf4 <- data_clean_penta2_soc %>% 
+  filter(screening_hf == '4')
+
+penta2_multi_hf4 <- data_clean_penta2_multi %>% 
+  filter(screening_hf == '4')
+
+penta3_soc_hf4 <- data_clean_penta3_soc %>% 
+  filter(screening_hf == '4')
+
+penta3_multi_hf4 <- data_clean_penta3_multi %>% 
+  filter(screening_hf == '4')
+
+mrv1_soc_hf4 <- data_clean_mrv1_soc %>% 
+  filter(screening_hf == '4')
+
+mrv1_multi_hf4 <- data_clean_mrv1_multi %>% 
+  filter(screening_hf == '4')
+
+mrv2_soc_hf4 <- data_clean_mrv2_soc %>% 
+  filter(screening_hf == '4')
+
+mrv2_multi_hf4 <- data_clean_mrv2_multi %>% 
+  filter(screening_hf == '4')
+
+passive_soc_hf4 <- data_clean_passive_soc %>% 
+  filter(screening_hf == '4')
+
+passive_multi_hf4 <- data_clean_passive_multi %>% 
+  filter(screening_hf == '4')
+
 ## count!
 
 #penta2soc
