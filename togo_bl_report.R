@@ -346,7 +346,8 @@ number_multiply <- c(
 report <- data.frame(Indicators = indicators, N = number_2, n_soc = number_soc, n_multiply = number_multiply)
 
 #write.csv(report, file = paste0('multiply_togo_cohort_indicators_', Sys.Date(), '.csv'), row.names = F)
-write.xlsx(report, file = paste0('multiply_togo_cohort_indicators_', Sys.Date(), '.xlsx'), row.names = F)
+write.xlsx(report, file = paste0('G:/Mi unidad/MULTIPLY/1.Cohorts/togo/reports/indicators/multiply_togo_cohort_indicators_',
+                                 Sys.Date(), '.xlsx'), row.names = F)
 
 #####description cohort togo #####
 # pick screening_dob_weeks, screening_hf and his_where cols 6,7,11
