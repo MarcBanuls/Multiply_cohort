@@ -218,7 +218,7 @@ total_com <- c(
   #apr23
   comm_detection_cohort %>% 
     filter(cd_date >= '2023-04-01' & 
-             cd_date <= '2023-01-30') %>% nrow(),
+             cd_date <= '2023-04-30') %>% nrow(),
   comm_detection_cohort %>% 
     filter(fever == 1 & cd_date >= '2023-04-01' & 
              cd_date <= '2023-04-30') %>% nrow(),
@@ -702,7 +702,7 @@ total_com_hf1 <- c(
   #apr23
   comm_detection_hf1 %>% 
     filter(cd_date >= '2023-04-01' & 
-             cd_date <= '2023-01-30') %>% nrow(),
+             cd_date <= '2023-04-30') %>% nrow(),
   comm_detection_hf1 %>% 
     filter(fever == 1 & cd_date >= '2023-04-01' & 
              cd_date <= '2023-04-30') %>% nrow(),
@@ -1186,7 +1186,7 @@ total_com_hf2 <- c(
   #apr23
   comm_detection_hf2 %>% 
     filter(cd_date >= '2023-04-01' & 
-             cd_date <= '2023-01-30') %>% nrow(),
+             cd_date <= '2023-04-30') %>% nrow(),
   comm_detection_hf2 %>% 
     filter(fever == 1 & cd_date >= '2023-04-01' & 
              cd_date <= '2023-04-30') %>% nrow(),
@@ -1676,7 +1676,7 @@ total_com_hf3 <- c(
   #apr23
   comm_detection_hf3 %>% 
     filter(cd_date >= '2023-04-01' & 
-             cd_date <= '2023-01-30') %>% nrow(),
+             cd_date <= '2023-04-30') %>% nrow(),
   comm_detection_hf3 %>% 
     filter(fever == 1 & cd_date >= '2023-04-01' & 
              cd_date <= '2023-04-30') %>% nrow(),
@@ -2158,7 +2158,7 @@ total_com_hf4 <- c(
   #apr23
   comm_detection_hf4 %>% 
     filter(cd_date >= '2023-04-01' & 
-             cd_date <= '2023-01-30') %>% nrow(),
+             cd_date <= '2023-04-30') %>% nrow(),
   comm_detection_hf4 %>% 
     filter(fever == 1 & cd_date >= '2023-04-01' & 
              cd_date <= '2023-04-30') %>% nrow(),
