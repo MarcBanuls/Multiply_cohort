@@ -2318,7 +2318,7 @@ total_com_soc_hf4 <- c(
   #apr23
   comm_detection_soc_hf4 %>% 
     filter(cd_date >= '2023-04-01' & 
-             cd_date <= '2023-01-30') %>% nrow(),
+             cd_date <= '2023-04-30') %>% nrow(),
   comm_detection_soc_hf4 %>% 
     filter(fever == 1 & cd_date >= '2023-04-01' & 
              cd_date <= '2023-04-30') %>% nrow(),
@@ -2479,7 +2479,7 @@ total_com_multi_hf4 <- c(
   #apr23
   comm_detection_multi_hf4 %>% 
     filter(cd_date >= '2023-04-01' & 
-             cd_date <= '2023-01-30') %>% nrow(),
+             cd_date <= '2023-04-30') %>% nrow(),
   comm_detection_multi_hf4 %>% 
     filter(fever == 1 & cd_date >= '2023-04-01' & 
              cd_date <= '2023-04-30') %>% nrow(),
@@ -2600,7 +2600,7 @@ total_com_multi_hf4 <- c(
   
 )
 
-
+#### save files ####
 
 # 
 # #create automated table (it's about time my man)
