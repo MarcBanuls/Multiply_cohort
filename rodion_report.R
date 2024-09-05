@@ -459,6 +459,7 @@ rownames(track_changes) <- r_names_table
 #let's do it pretty
 #http://www.sthda.com/english/wiki/r-xlsx-package-a-quick-start-guide-to-manipulate-excel-files-in-r#write-data-to-an-excel-file
 wb <- createWorkbook()
+#if it gives an error (must be a workbook) you have to refresh/restart R, as is not detecting it properly
 addWorksheet(wb,'track_changes')
 writeDataTable(wb,'track_changes',track_changes, startCol = 3,startRow = 3,colNames = TRUE,rowNames = FALSE,
                withFilter = FALSE)
