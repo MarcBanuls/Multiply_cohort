@@ -394,7 +394,27 @@ total_com <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_cohort %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_cohort %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_cohort %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_cohort %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_cohort %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_cohort %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_cohort %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
   
@@ -620,7 +640,27 @@ total_com_soc <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_soc %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_soc %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_soc %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
                )
@@ -842,7 +882,27 @@ total_com_multi <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_multi %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_multi %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_multi %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -1066,7 +1126,27 @@ total_com_hf1 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_hf1 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_hf1 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_hf1 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_hf1 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_hf1 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_hf1 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_hf1 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -1287,7 +1367,27 @@ total_com_soc_hf1 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_soc_hf1 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_soc_hf1 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc_hf1 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc_hf1 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_soc_hf1 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc_hf1 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc_hf1 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -1509,7 +1609,27 @@ total_com_multi_hf1 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_multi_hf1 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_multi_hf1 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi_hf1 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi_hf1 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_multi_hf1 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi_hf1 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi_hf1 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -1735,7 +1855,27 @@ total_com_hf2 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_hf2 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_hf2 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_hf2 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_hf2 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_hf2 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_hf2 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_hf2 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -1958,7 +2098,27 @@ total_com_soc_hf2 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_soc_hf2 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_soc_hf2 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc_hf2 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc_hf2 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_soc_hf2 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc_hf2 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc_hf2 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -2182,7 +2342,27 @@ total_com_multi_hf2 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_multi_hf2 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_multi_hf2 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi_hf2 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi_hf2 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_multi_hf2 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi_hf2 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi_hf2 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -2414,7 +2594,27 @@ total_com_hf3 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_hf3 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_hf3 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_hf3 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_hf3 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_hf3 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_hf3 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_hf3 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -2637,7 +2837,27 @@ total_com_soc_hf3 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_soc_hf3 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_soc_hf3 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc_hf3 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc_hf3 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_soc_hf3 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc_hf3 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc_hf3 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -2860,7 +3080,27 @@ total_com_multi_hf3 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_multi_hf3 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_multi_hf3 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi_hf3 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi_hf3 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_multi_hf3 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi_hf3 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi_hf3 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -3084,7 +3324,27 @@ total_com_hf4 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_hf4 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_hf4 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_hf4 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_hf4 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_hf4 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_hf4 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_hf4 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -3307,7 +3567,27 @@ total_com_soc_hf4 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_soc_hf4 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_soc_hf4 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc_hf4 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_soc_hf4 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_soc_hf4 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc_hf4 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_soc_hf4 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -3531,7 +3811,27 @@ total_com_multi_hf4 <- c(
              cd_date <= '2024-08-31') %>% nrow(),
   comm_detection_multi_hf4 %>% 
     filter(malaria_rdt == 1 & cd_date >= '2024-08-01' & 
-             cd_date <= '2024-08-31') %>% nrow()
+             cd_date <= '2024-08-31') %>% nrow(),
+  #sep24
+  comm_detection_multi_hf4 %>% 
+    filter(cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi_hf4 %>% 
+    filter(fever == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  comm_detection_multi_hf4 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-09-01' & 
+             cd_date <= '2024-09-30') %>% nrow(),
+  #oct24
+  comm_detection_multi_hf4 %>% 
+    filter(cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi_hf4 %>% 
+    filter(fever == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow(),
+  comm_detection_multi_hf4 %>% 
+    filter(malaria_rdt == 1 & cd_date >= '2024-10-01' & 
+             cd_date <= '2024-10-31') %>% nrow()
   
   
 )
@@ -3549,7 +3849,7 @@ total_com_multi_hf4 <- c(
 sample_names = c("Visits" ,"Fever", "Malaria_rdt")
 r_names_table <- c(rep(sample_names,  times=17))
 months<- c('Jan 23','Feb 23','Mar 23','Apr 23','May 23','Jun 23','Jul 23','Aug 23','Sep 23','Oct 23','Nov 23',' Dec 23',
-           'Jan 24','Feb 24', 'Mar 24', 'Apr 24', 'May 24', 'Jun 24', 'Jul 24', 'Aug 24')
+           'Jan 24','Feb 24', 'Mar 24', 'Apr 24', 'May 24', 'Jun 24', 'Jul 24', 'Aug 24', 'Sep 24', 'Oct 24')
 months <- c(rep(months,  each=3))
 #add months as suffix
 r_names_table <- paste(r_names_table,months)
